@@ -34,11 +34,11 @@ export class ScreenEvaluator {
             const itemName = similarItemNames[index];
             const stats = PriceEvaluator.getAllStatistics(itemTradeDetail);
             
+            console.log('');
             console.log('Some stats for "' + itemName + '"!');
 
             console.log('Minimal online selling price: ' + stats.minimalOnlineSalePrice);
             console.log('Average online selling price: ' + stats.averageOnlineSalePrice);
-            console.log('');
         })
     }
 }
