@@ -1,5 +1,6 @@
 // Actions
 import { SHOW_SETTINGS_WINDOW } from "./actions/showSettingsWindow";
+import { ITEMS } from "./actions/items";
 
 // Models
 import { Item } from "./Api";
@@ -10,7 +11,7 @@ export interface IState {
     isSearchWindowVisible: boolean
 }
 
-export function reducer(state: IState, action): IState {
+export function reducer(state: IState, action: any): IState {
     if (typeof state === 'undefined') {
         return {
             items: [],
@@ -27,6 +28,12 @@ export function reducer(state: IState, action): IState {
             return {
                 ...state,
                 isSettingsWindowVisible: true
+            };
+
+        case ITEMS:
+            return {
+                ...state,
+                items: action.items
             };
 
         default:
