@@ -1,0 +1,8 @@
+// Depencencies
+node_modules
+
+// Editor Config
+.vscode
+
+// Build Artifacts
+dist

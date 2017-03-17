@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "types" : [ "node" ],
+    "target": "es5",
+    "jsx": "react",
+    "lib": [ "dom", "es5", "es2015.iterable", "es2015.promise" ],
+    "removeComments": true,
+    "sourceMap": true,
+    "alwaysStrict": true
+  },
+    "exclude": [
+        "node_modules",
+        "**/index.d.ts"
+    ]
+}
