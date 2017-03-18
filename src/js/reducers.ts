@@ -7,6 +7,7 @@ import { Item } from "./Api";
 
 export interface IState {
     items: Item[],
+    itemNames: string[],
     isSettingsWindowVisible: boolean,
     isSearchWindowVisible: boolean
 }
@@ -15,6 +16,7 @@ export function reducer(state: IState, action: any): IState {
     if (typeof state === 'undefined') {
         return {
             items: [],
+            itemNames: [],
             isSettingsWindowVisible: false,
             isSearchWindowVisible: false
         };
@@ -33,7 +35,8 @@ export function reducer(state: IState, action: any): IState {
         case ITEMS:
             return {
                 ...state,
-                items: action.items
+                items: action.items,
+                itemNames: action.itemNames
             };
 
         default:
