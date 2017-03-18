@@ -1,10 +1,10 @@
 // External Modules
-const jsonStore = require("electron-json-storage");
+import * as jsonStore from 'electron-json-storage';
 
 export class PromiseJSONStore {
     public static getValue<T>(key: string): Promise<T> {
         return new Promise<T>((resolve, reject)=>{
-            jsonStore.get(key, function(error, data) {
+            jsonStore.get(key, (error, data) => {
                 if (error) {
                     resolve(null);
                 }
@@ -14,14 +14,14 @@ export class PromiseJSONStore {
                     data = null;
                 }
 
-                resolve(data);
+                resolve(data as T);
             });
         })
     }
 
     public static setValue(key: string, value: any): Promise<void> {
         return new Promise<void>((resolve, reject)=>{
-            jsonStore.set(key, value, function(error, data) {
+            jsonStore.set(key, value, (error) => {
                 if (error) {
                     reject(error);
                 }

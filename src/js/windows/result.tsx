@@ -1,8 +1,11 @@
+// External Modules
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import ResultWindow from '../components/ResultWindow';
 import { Provider } from 'react-redux';
 import { remote } from 'electron';
+
+// Internal Modules
+import ResultWindow from '../components/ResultWindow';
 
 ReactDOM.render(
     <Provider store={remote.getGlobal('store')}>

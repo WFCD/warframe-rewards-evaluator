@@ -1,4 +1,5 @@
-import {Item} from '../Api';
+// Models
+import {Item} from '../models/item';
 
 export const ITEMS = "ITEMS";
 

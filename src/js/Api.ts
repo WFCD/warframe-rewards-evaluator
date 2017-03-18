@@ -1,25 +1,10 @@
-var fetch = require('fetch-cookie')(require('node-fetch'))
+// External Modules
+import * as fetch from 'node-fetch';
+import * as fs from 'fs';
 
-// Those are mocked interfaces of an API i do not have in my own hands.
-// They, and thus the application may break at any given time without a warning.
-
-export interface Item {
-    item_name: string;
-    item_type: string;
-}
-
-export interface TradePosition {
-    ingame_name: string;
-    online_ingame: boolean;
-    online_status: boolean;
-    price: number;
-    count: number;
-}
-
-export interface ItemTradeDetails {
-    sell: TradePosition[];
-    buy: TradePosition[];
-}
+// Models
+import {Item} from './models/item';
+import {ItemTradeDetails} from './models/itemTradeDetails';
 
 export class Api
 {
@@ -36,7 +21,21 @@ export class Api
             }
         )).json();
 
-        return result;
+        let v2Result = await (await fetch(
+            'https://bitbucket.org/42bytes/warframe.market-items/raw/default/items.json',
+            {
+                method: 'get'
+            }
+        )).json();
+
+        const cominedResults = result.map(result => {
+            return {
+                ...result,
+                v2Info: v2Result.items.find(v2Result => v2Result.en.item_name === result.item_name)
+            }
+        });
+
+        return cominedResults;
     }
 
     public static async getOrdersForItem(item: Item): Promise<ItemTradeDetails> {

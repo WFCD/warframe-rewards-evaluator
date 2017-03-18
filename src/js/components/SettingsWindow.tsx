@@ -1,7 +1,8 @@
+// External Modules
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {start} from "../actions/start";
-import {stop} from "../actions/stop";
+
+// Actions
 import {settings} from "../actions/settings";
 
 class SettingsWindow extends React.Component<Props, State>

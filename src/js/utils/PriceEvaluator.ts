@@ -1,24 +1,8 @@
-// Internal Modules
-import {ItemTradeDetails, TradePosition} from '../Api';
-
-export interface TradePositionStatistics {
-    salePriceRange: number[];
-    onlineSalePriceRange: number[];
-    buyPriceRange: number[];
-    onlineBuyPriceRange: number[];
-    minimalSalePrice: number;
-    minimalOnlineSalePrice: number;
-    averageSalePrice: number;
-    averageOnlineSalePrice: number;
-    medianSalePrice: number;
-    medianOnlineSalePrice: number;
-    minimalBuyPrice: number;
-    minimalOnlineBuyPrice: number;
-    averageBuyPrice: number;
-    averageOnlineBuyPrice: number;
-    medianBuyPrice: number;
-    medianOnlineBuyPrice: number;
-}
+// Models
+import {ItemStatistics} from '../models/itemStatistics';
+import {ItemTradeDetails} from '../models/itemTradeDetails';
+import {TradePosition} from '../models/tradePosition';
+import {Item} from '../models/item';
 
 export class PriceEvaluator {
     private static getOnlinePositions(tradePositions: TradePosition[]): TradePosition[] {
@@ -26,12 +10,12 @@ export class PriceEvaluator {
     }
 
     private static getMedian(values: number[]) {
-
         values.sort( function(a,b) {return a - b;} );
-
-        var half = Math.floor(values.length/2);
+        
+        const half = Math.floor(values.length/2);
 
         let result;
+
         if (values.length % 2) {
             result = values[half];
         }
@@ -59,6 +43,17 @@ export class PriceEvaluator {
         });
         return minimal === Infinity ? null : minimal;
     }
+
+    private static getMaximal(values: number[]) {
+        let minimal = 0;
+        values.forEach(value => {
+            if(value > minimal) {
+                minimal = value;
+            }
+        });
+        return minimal === 0 ? null : minimal;
+    }
+
 
     static getMinimalSalePrice(itemTradeDetails: ItemTradeDetails): number {
         return this.getMinimal(itemTradeDetails.sell.map(item => item.price));
@@ -92,12 +87,12 @@ export class PriceEvaluator {
         return this.getOnlinePositions(itemTradeDetails.sell).map(item => item.price).sort((a, b) => a - b);
     }
 
-    static getMinimalBuyPrice(itemTradeDetails: ItemTradeDetails): number {
-        return this.getMinimal(itemTradeDetails.buy.map(item => item.price));
+    static getMaximalBuyPrice(itemTradeDetails: ItemTradeDetails): number {
+        return this.getMaximal(itemTradeDetails.buy.map(item => item.price));
     }
 
-    static getMinimalOnlineBuyPrice(itemTradeDetails: ItemTradeDetails): number {
-        return this.getMinimal(this.getOnlinePositions(itemTradeDetails.buy).map(item => item.price));
+    static getMaximalOnlineBuyPrice(itemTradeDetails: ItemTradeDetails): number {
+        return this.getMaximal(this.getOnlinePositions(itemTradeDetails.buy).map(item => item.price));
     }
 
     static getAverageBuyPrice(itemTradeDetails: ItemTradeDetails): number {
@@ -124,8 +119,16 @@ export class PriceEvaluator {
         return this.getOnlinePositions(itemTradeDetails.buy).map(item => item.price).sort((a, b) => a - b);
     }
 
+    static getDucatsPrice(item: Item) {
+        return item.v2Info.ducats;
+    }
+
+    static getTradingTax(item: Item) {
+        return item.v2Info.trading_tax;
+    }
+
     /** All values default to null if no meaningful result could be found */
-    static getAllStatistics(itemTradeDetails: ItemTradeDetails): TradePositionStatistics {
+    static getAllStatistics(item: Item, itemTradeDetails: ItemTradeDetails): ItemStatistics {
         return {
             salePriceRange: this.getSalePriceRange(itemTradeDetails),
             onlineSalePriceRange: this.getOnlineSalePriceRange(itemTradeDetails),
@@ -137,12 +140,14 @@ export class PriceEvaluator {
             averageOnlineSalePrice: this.getAverageOnlineSalePrice(itemTradeDetails),
             medianSalePrice: this.getMedianSalePrice(itemTradeDetails),
             medianOnlineSalePrice: this.getMedianOnlineSalePrice(itemTradeDetails),
-            minimalBuyPrice: this.getMinimalBuyPrice(itemTradeDetails),
-            minimalOnlineBuyPrice: this.getMinimalOnlineBuyPrice(itemTradeDetails),
+            maximalBuyPrice: this.getMaximalBuyPrice(itemTradeDetails),
+            maximalOnlineBuyPrice: this.getMaximalOnlineBuyPrice(itemTradeDetails),
             averageBuyPrice: this.getAverageBuyPrice(itemTradeDetails),
             averageOnlineBuyPrice: this.getAverageOnlineBuyPrice(itemTradeDetails),
             medianBuyPrice: this.getMedianBuyPrice(itemTradeDetails),
-            medianOnlineBuyPrice: this.getMedianOnlineBuyPrice(itemTradeDetails)
+            medianOnlineBuyPrice: this.getMedianOnlineBuyPrice(itemTradeDetails),
+            ducatsPrice: this.getDucatsPrice(item),
+            tradingTax: this.getTradingTax(item)
         }
     }
 }

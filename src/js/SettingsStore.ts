@@ -1,4 +1,4 @@
-// Modules
+// Internal Modules
 import { PromiseJSONStore } from "./utils/PromiseJSONStore";
 
 export class SettingsStore
