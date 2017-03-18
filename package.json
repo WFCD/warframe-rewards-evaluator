@@ -1,34 +1,46 @@
 {
-  "name": "warframe-rewards-evaluater",
-  "version": "1.0.0",
-  "main": "./dist/js/main.js",
-  "license": "MIT",
-  "dependencies": {
-    "electron": "^1.4.13",
-    "electron-json-storage": "^3.0.1",
-    "fetch-cookie": "^0.6.0",
-    "node-fetch": "^1.6.3",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-redux": "^5.0.2",
-    "redux": "^3.6.0",
-    "string-similarity": "^1.1.0",
-    "typescript": "^2.2.1",
-    "whatwg-fetch": "^2.0.2"
-  },
-  "devDependencies": {
-    "@types/electron": "^1.4.33",
-    "@types/electron-json-storage": "0.0.19",
-    "@types/react": "^15.0.3",
-    "@types/react-dom": "^0.14.21",
-    "@types/whatwg-fetch": "0.0.33",
-    "del": "^2.2.2",
-    "ncp": "^2.0.0",
-    "typescript": "^2.1.4"
-  },
-  "scripts": {
-    "start": "node_modules/.bin/electron .",
-    "build": "node build && tsc --outDir dist/js",
-    "restart": "node build && tsc --outDir dist/js && node_modules/.bin/electron ."
-  }
+    "name": "warframe-rewards-evaluater",
+    "version": "1.0.0",
+    "main": "./dist/js/main.js",
+    "license": "MIT",
+    "author": {
+        "name" : "Clemens Himmer",
+        "email" : "clemens.himmer@hotmail.com"
+    },
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/tarekis/warframe-rewards-evaluator.git"
+    },
+    "bugs": {
+        "url" : "https://github.com/tarekis/warframe-rewards-evaluator/issues",
+        "email" : "clemens.himmer@hotmail.com"
+    },
+    "dependencies": {
+        "electron": "^1.4.13",
+        "electron-json-storage": "^3.0.1",
+        "fetch-cookie": "^0.6.0",
+        "node-fetch": "^1.6.3",
+        "react": "^15.4.2",
+        "react-dom": "^15.4.2",
+        "react-redux": "^5.0.2",
+        "redux": "^3.6.0",
+        "string-similarity": "^1.1.0",
+        "typescript": "^2.2.1",
+        "whatwg-fetch": "^2.0.2"
+    },
+    "devDependencies": {
+        "@types/electron": "^1.4.33",
+        "@types/electron-json-storage": "0.0.19",
+        "@types/react": "^15.0.3",
+        "@types/react-dom": "^0.14.21",
+        "@types/whatwg-fetch": "0.0.33",
+        "del": "^2.2.2",
+        "ncp": "^2.0.0",
+        "typescript": "^2.1.4"
+    },
+    "scripts": {
+        "start": "node_modules/.bin/electron .",
+        "build": "node build && tsc --outDir dist/js",
+        "restart": "node build && tsc --outDir dist/js && node_modules/.bin/electron ."
+    }
 }
