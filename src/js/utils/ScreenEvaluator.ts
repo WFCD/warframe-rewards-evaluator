@@ -57,44 +57,59 @@ export class ScreenEvaluator {
     }
 
     public static async processCurrentScreen(state: IState) {
+        // TODO: Ask Warframe for permisson for internal hooks, at the time this is the only legal way to get the info..
         const __thisRef__ = this;
         screenshot(temporaryScreenshotName, function(error, complete) {
             // HACK we should probably not ignore errors, but it appears there are errors passed, even if there are none..
-            Tesseract.recognize('test.jpg')            
+            Tesseract.recognize('test_new_cropped.jpg')            
             .progress(function  (p) { console.log('progress', p)  })
             .catch(err => console.error(err))
             .then(function(result) {
                 console.log('tesseract results');
                 var fs = require('fs');
-                console.dir(result);
-                var cache = [];
-                var stringified = JSON.stringify(result, function(key, value) {
-                    if (typeof value === 'object' && value !== null) {
-                        if (cache.indexOf(value) !== -1) {
-                            // Circular reference found, discard key
-                            return;
-                        }
-                        // Store value in our collection
-                        cache.push(value);
+                // HACK eeeeh, this just works like that, trust me!
+                const foundLines = result.blocks[0].paragraphs[0].lines;
+                const validityRegex = /[A-Z]{3,}/; // A line needs to contain at least capital letters to be considered valid // This needs to be tested - are there items with letters?? idk man
+                let validLines: Tesseract.Line[] = [] as Tesseract.Line[];
+                console.log(foundLines);
+                foundLines.forEach(line => {
+                    if(line.text.match(validityRegex)) {
+                        validLines.push(line);
                     }
-                    return value;
-                }, 4);
-                cache = null; // Enable garbage collection
-                fs.writeFile("results.json", stringified, function(err) {
-                    if(err) {
-                        return console.log(err);
-                    }
-
-                    console.log("The file was saved!");
                 });
+                // First word has no previous word, use this instead
+                const wordBaseLineFallback =  {
+                    text: null,
+                    baseline: {
+                        x1: 0
+                    }
+                };
+                const builtNames = [];
+                let currentNameIndex = 0;
+                validLines.forEach((line, index) => {
+                    line.words.forEach((word, index) => {
+                        const previousWord =line.words[index - 1] || wordBaseLineFallback;
+                        // If the previous word was not in a 30px range close of this word, complete the current word
+                        if(!((previousWord.baseline.x1 + 30) > word.baseline.x0)) {
+                            currentNameIndex++;
+                        }
+                        // Ensure the current word is a string, and never undefined
+                        if(!builtNames[currentNameIndex]) {
+                            builtNames[currentNameIndex] = '';
+                        }
+                        builtNames[currentNameIndex] += ' ' + word.text;
+                    });
+                });
+                console.log('OCR built those words from screnshot:');
+                console.log(builtNames);
                 
-                const similarItemNames = [
-                    'Akbronco Prime Blueprind',
-                    'Warrio',
-                    'Night Stalken',
-                    'Bo Prime Prnament'
-                ];
-                __thisRef__.processItemNames(similarItemNames, state);
+                // const similarItemNames = [
+                //     'Akbronco Prime Blueprind',
+                //     'Warrio',
+                //     'Night Stalken',
+                //     'Bo Prime Prnament'
+                // ];
+                __thisRef__.processItemNames(builtNames, state);
             })
         });
     }
