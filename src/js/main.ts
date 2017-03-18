@@ -44,8 +44,8 @@ class Main
         this.createStore();
         // TODO
         // Bind global keystroke event to the screen evaulation
-        const ret = globalShortcut.register('Control+Space', () => {
-            console.log('Control+Space is pressed');
+        const ret = globalShortcut.register('Control+Alt+Enter', () => {
+            console.log('Control+Alt+Enter was pressed');
             ScreenEvaluator.processCurrentScreen(this.store.getState());
         });
         // Fetch initial item data
