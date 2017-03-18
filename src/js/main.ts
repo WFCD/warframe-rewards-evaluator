@@ -42,8 +42,6 @@ class Main
         // this.createSettingsWindow();
         // this.createTrayIcon();
         this.createStore();
-        // TODO
-        // Bind global keystroke event to the screen evaulation
         const ret = globalShortcut.register('Control+Alt+Enter', () => {
             console.log('Control+Alt+Enter was pressed');
             ScreenEvaluator.processCurrentScreen(this.store.getState());
@@ -138,6 +136,10 @@ class Main
     }
 }
 
+
+// Electron instance creation
+// Consider this the main call
+
 let main = null;
 
 var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
@@ -147,7 +149,7 @@ var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) 
     }
 });
 
-    if (shouldQuit) {
+if (shouldQuit) {
     app.quit();
 }
 
@@ -155,26 +157,3 @@ else {
     main = new Main(app);
     main.run();
 }
-
-
-/*
-
-
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
-});
-
-app.on('activate', () => {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (win === null) {
-        createSearchWindow()
-    }
-});
-*/
