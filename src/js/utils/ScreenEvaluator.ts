@@ -9,9 +9,7 @@ export class ScreenEvaluator {
     private static getItemBySimilarName(name: string, state: IState): Item {
         // Find best match to scraped name
         const bestMatch = stringSimilarity.findBestMatch(name, state.itemNames).bestMatch.target;
-
-        // REVIEW Maybe compile to es6? is that ok with electron, or not? Then we can use filter instead of .. this.
-        return state.items.filter(item => item.item_name === bestMatch)[0];
+        return state.items.find(item => item.item_name === bestMatch);
     }
 
     public static async processCurrentScreen(state: IState) {
