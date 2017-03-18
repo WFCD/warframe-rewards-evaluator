@@ -1,3 +1,4 @@
+// External Modules
 const jsonStore = require("electron-json-storage");
 
 export class PromiseJSONStore {
@@ -8,7 +9,7 @@ export class PromiseJSONStore {
                     resolve(null);
                 }
 
-                // Empty settings default to null
+                // Empty values default to null
                 if(data !== null  && data.constructor === Object && Object.keys(data).length === 0) {
                     data = null;
                 }

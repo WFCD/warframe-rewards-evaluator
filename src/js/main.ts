@@ -1,6 +1,6 @@
 // External Modules
-const path = require('path');
-const url = require('url');
+import * as path from 'path';
+import * as url from 'url';
 import { app, BrowserWindow, Tray, Menu, globalShortcut } from "electron";
 import { createStore } from "redux";
 

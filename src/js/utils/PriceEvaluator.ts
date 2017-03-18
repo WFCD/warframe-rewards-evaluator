@@ -1,3 +1,4 @@
+// Internal Modules
 import {ItemTradeDetails, TradePosition} from '../Api';
 
 export interface TradePositionStatistics {
