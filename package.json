@@ -47,7 +47,7 @@
   },
   "scripts": {
     "start": "node_modules/.bin/electron .",
-    "build": "node build && tsc --outDir dist/js",
-    "restart": "node build && tsc --outDir dist/js && node_modules/.bin/electron ."
+    "build": "node scripts/build && tsc --outDir dist/js",
+    "restart": "npm run build && npm run start"
   }
 }

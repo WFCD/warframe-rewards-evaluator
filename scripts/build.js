@@ -3,8 +3,8 @@ const ncp = require('ncp');
 const path = require('path');
 const fs = require('fs');
 
-const srcpath = path.join(__dirname,'src');
-const destpath = path.join(__dirname,'dist');
+const srcpath = path.join(__dirname,'..', 'src');
+const destpath = path.join(__dirname, '..', 'dist');
 
 // Purges the dist directory and copies static assets
 // The dist folder is a prerequisite for the typescript compile to work
