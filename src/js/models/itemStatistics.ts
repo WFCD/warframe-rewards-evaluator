@@ -1,4 +1,8 @@
+// Models
+import {BestSaleValue} from './bestSaleValue';
+
 export interface ItemStatistics {
+    recommendedSalePrice: BestSaleValue;
     salePriceRange: number[];
     onlineSalePriceRange: number[];
     buyPriceRange: number[];

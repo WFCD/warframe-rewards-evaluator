@@ -1,5 +1,8 @@
 // Actions
 import { SHOW_SETTINGS_WINDOW } from "./actions/showSettingsWindow";
+import { HIDE_SETTINGS_WINDOW } from "./actions/hideSettingsWindow";
+import { SHOW_STATS_WINDOW } from "./actions/showStatsWindow";
+import { HIDE_STATS_WINDOW } from "./actions/hideStatsWindow";
 import { ITEMS } from "./actions/items";
 import { ITEMS_DETAILS } from "./actions/itemDetails";
 import { TESSERACT_PROGRESS } from "./actions/tesseractProgess";
@@ -7,21 +10,21 @@ import { API_STARTED } from "./actions/apiStarted";
 import { API_FINISHED } from "./actions/apiFinished";
 
 // Models
-import { State } from "./models/state";
+import { IState } from "./models/state";
 
-function getInitialState(): State {
+function getInitialState(): IState {
     return {
         items: [],
         itemNames: [],
         itemDetails: [],
         isSettingsWindowVisible: false,
-        isSearchWindowVisible: false,
+        isStatsWindowVisible: false,
         tesseractProgess: 0,
         isApiWorking: false
     };
 }
 
-export function reducer(state: State, action: any): State {
+export function reducer(state: IState, action: any): IState {
     if (typeof state === 'undefined') {
         return getInitialState();
     }
@@ -34,6 +37,27 @@ export function reducer(state: State, action: any): State {
             return {
                 ...state,
                 isSettingsWindowVisible: true
+            };
+
+        case HIDE_SETTINGS_WINDOW:
+            return {
+                ...state,
+                isSettingsWindowVisible: true
+            };
+
+        case SHOW_STATS_WINDOW:
+            return {
+                ...state,
+                isStatsWindowVisible: true
+            };
+
+        case HIDE_STATS_WINDOW:
+            return {
+                ...state,
+                isStatsWindowVisible: false,
+                // Reset values on stat window close
+                itemDetails: [],
+                tesseractProgess: 0
             };
 
         case ITEMS:

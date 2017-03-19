@@ -3,6 +3,7 @@ import {ItemStatistics} from '../models/itemStatistics';
 import {ItemTradeDetails} from '../models/itemTradeDetails';
 import {TradePosition} from '../models/tradePosition';
 import {Item} from '../models/item';
+import {BestSaleValue} from '../models/bestSaleValue';
 
 export class PriceEvaluator {
     private static getOnlinePositions(tradePositions: TradePosition[]): TradePosition[] {
@@ -54,6 +55,17 @@ export class PriceEvaluator {
         return minimal === 0 ? null : minimal;
     }
 
+    static getRecommendedSalePrice(itemTradeDetails: ItemTradeDetails): BestSaleValue {
+        const minimalOnlineSalePrice = this.getMinimalOnlineSalePrice(itemTradeDetails);
+        const maximalOnlineBuyPrice = this.getMaximalOnlineBuyPrice(itemTradeDetails);
+
+        const sellingPriceIsHigherThanBuyingPrice = minimalOnlineSalePrice > maximalOnlineBuyPrice;
+
+        return {
+            reason: sellingPriceIsHigherThanBuyingPrice ? 'sell' : 'buy',
+            value: sellingPriceIsHigherThanBuyingPrice ? minimalOnlineSalePrice : maximalOnlineBuyPrice
+        }
+    }
 
     static getMinimalSalePrice(itemTradeDetails: ItemTradeDetails): number {
         return this.getMinimal(itemTradeDetails.sell.map(item => item.price));
@@ -136,6 +148,7 @@ export class PriceEvaluator {
     /** All values default to null if no meaningful result could be found */
     static getAllStatistics(item: Item, itemTradeDetails: ItemTradeDetails): ItemStatistics {
         return {
+            recommendedSalePrice: this.getRecommendedSalePrice(itemTradeDetails),
             salePriceRange: this.getSalePriceRange(itemTradeDetails),
             onlineSalePriceRange: this.getOnlineSalePriceRange(itemTradeDetails),
             buyPriceRange: this.getBuyPriceRange(itemTradeDetails),

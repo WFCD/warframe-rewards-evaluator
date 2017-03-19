@@ -22,17 +22,17 @@ import {itemDetails} from "../actions/itemDetails";
 // Models
 import {ItemTradeDetails} from '../models/itemTradeDetails';
 import {Item} from '../models/item';
-import {State} from '../models/state';
+import {IState} from '../models/state';
  
 export class ScreenEvaluator {
     
-    private static getItemBySimilarNames(names: string[], state: State): Item[] {
+    private static getItemBySimilarNames(names: string[], state: IState): Item[] {
         // Find best match to scraped name
-        const confidentlyFoundItems = [];
+        const confidentlyFoundItems: Item[] = [];
         names.forEach(name => {
             const bestMatch = stringSimilarity.findBestMatch(name, state.itemNames).bestMatch;
             // Allow a 30% fault tolerance, others are presumeably read wrong from screen..
-            if (bestMatch.rating > 0.7) {                ;
+            if (bestMatch.rating > 0.7) {
                 confidentlyFoundItems.push(state.items.find(item => (item || {item_name : null}).item_name === bestMatch.target));
             }
         });
@@ -51,11 +51,10 @@ export class ScreenEvaluator {
         return correspondingItemTradeDetails;
     }
     
-    private static async processItemNames(inExactItemNames: string[], store: Store<State>, screenShotFilePaths: string[]) {
+    private static async processItemNames(inExactItemNames: string[], store: Store<IState>, screenShotFilePaths: string[]) {
         const state = store.getState();
         // TODO scrape this from screen
         const foundItems = this.getItemBySimilarNames(inExactItemNames, state);
-        console.log(foundItems);
 
         store.dispatch(apiStarted());
         const correspondingItemTradeDetails = await this.getOrdersForItems(foundItems);
@@ -77,7 +76,7 @@ export class ScreenEvaluator {
         });
     }
 
-    public static async processCurrentScreen(store: Store<State>, capturePath: string) {
+    public static async processCurrentScreen(store: Store<IState>, capturePath: string) {
 
         //  /————————————————————————————————————————————————————————————————————————————————————————————————————————————————\
         // |   TODO: Ask Warframe for permisson for internal hooks, at the time this is the only legal way to get the info..  |
@@ -91,8 +90,6 @@ export class ScreenEvaluator {
         const temporaryScreenshotCroppedFileName = temporaryScreenshotBaseFileName + 'cropped.jpg';
         const temporaryScreenshotNameRaw = path.join(capturePath, temporaryScreenshotRawFileName);
         const temporaryScreenshotNameCropped = path.join(capturePath, temporaryScreenshotCroppedFileName);
-
-        console.log(temporaryScreenshotNameRaw);
 
         screenshot(temporaryScreenshotNameRaw, function(error, complete) {
             // HACK we should probably not ignore all errors, but some are wrong..
@@ -181,7 +178,6 @@ export class ScreenEvaluator {
                     // HACK There was a case where the first item is undefined, because it's baseline was strange or so
                     // This prevents it for now, but i gotta see why that happened
                     builtNames = builtNames.filter(builtName => builtName !== undefined);
-                    console.log(builtNames);
                     __thisRef__.processItemNames(builtNames, store, [
                         // temporaryScreenshotNameRaw, temporaryScreenshotNameCropped
                     ]);

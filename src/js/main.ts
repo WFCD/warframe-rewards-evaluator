@@ -16,15 +16,16 @@ import {showSettingsWindow} from "./actions/showSettingsWindow";
 import {items} from "./actions/items";
 
 // Models
-import {State} from "./models/state";
+import {IState} from "./models/state";
+
 
 class Main
 {
     private app: Electron.App;
-    private searchWindow: Electron.BrowserWindow;
+    private statsWindow: Electron.BrowserWindow;
     private settingsWindow: Electron.BrowserWindow;
     private tray: Electron.Tray;
-    private store: Store<State>;
+    private store: Store<IState>;
     private settingsStore: SettingsStore;
 
     constructor(app: Electron.App) {
@@ -50,10 +51,11 @@ class Main
         });
         
         // TODO include
+        this.createStatsWindow();
         // this.createSettingsWindow();
         // this.createTrayIcon();
         this.createStore();
-        const ret = globalShortcut.register('Control+Alt+Enter', () => {
+        const boundShortcut = globalShortcut.register('Control+Alt+Enter', () => {
             console.log('Control+Alt+Enter was pressed');
             console.log('Triggering scraping...');
             ScreenEvaluator.processCurrentScreen(this.store, temporaryScreenshotBasePath);
@@ -69,22 +71,25 @@ class Main
         this.store.subscribe(() => this.onStateChanged(this.store.getState()));
     }
 
-    private onStateChanged(state: State) {
+    private onStateChanged(state: IState) {
         // Settings window
         if (state.isSettingsWindowVisible) {
             // this.settingsWindow.show();
         } else {
             // this.settingsWindow.hide();
         }
+
+        if (state.isStatsWindowVisible) {
+            this.showStatsWindow();
+        } else {
+            this.hideStatsWindow();
+        }
     }
 
     private createTrayIcon() {
         // TODO rewrite, and include
-        this.tray = new Tray(path.join(__dirname, "/../img/timetrack-icon_512x512-grey.png"));
-        this.tray.on('click', () => {
-            this.showSearchWindow();
-        });
-        this.tray.setToolTip("Fusonic Timetracking");
+        this.tray = new Tray(path.join(__dirname, '..','img','logo.png'));
+        this.tray.setToolTip("Warframe Relic Rewards Evaluator");
 
         var menu = Menu.buildFromTemplate([
             {
@@ -108,21 +113,51 @@ class Main
 
         this.tray.setContextMenu(menu);
     }
+    
+
+    private createStatsWindow() {
+        this.statsWindow = new BrowserWindow(
+            {
+                center: true,
+                frame: false,
+                movable: true,
+                resizable: true,
+                skipTaskbar: true,
+                width: 1400,
+                height: 800,
+                title: "Results"
+            }
+        );
+
+        this.statsWindow.on('beforeunload', (e) => {
+            this.statsWindow.hide();
+            e.returnValue = false;
+        });
+
+        // Open the DevTools.
+        this.statsWindow.webContents.openDevTools();
+
+        // and load the index.html of the app.
+        this.statsWindow.loadURL(url.format({
+            pathname: path.join(__dirname, '..', 'views', 'stats.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
+    }
 
     private createSettingsWindow() {
         // TODO include
         this.settingsWindow = new BrowserWindow(
             {
-                alwaysOnTop: true,
                 center: true,
-                //frame: false,
-                movable: false,
-                // resizable: false,
+                frame: false,
+                movable: true,
+                resizable: true,
                 skipTaskbar: true,
                 transparent: true,
                 width: 800,
                 height: 400,
-                title: "Settings"
+                title: "Results"
             }
         );
 
@@ -137,12 +172,20 @@ class Main
         }));
     }
 
-    showSearchWindow() {
-        this.searchWindow.show();
+    showStatsWindow() {
+        this.statsWindow.show();
     }
 
     showSettingsWindow() {
         this.settingsWindow.show();
+    }
+    
+    hideStatsWindow() {
+        this.statsWindow.hide();
+    }
+
+    hideSettingsWindow() {
+        this.settingsWindow.hide();
     }
 
     focusTray() {

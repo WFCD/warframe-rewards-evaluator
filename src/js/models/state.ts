@@ -2,12 +2,12 @@
 import { Item } from "./item";
 import { ItemDetail } from "./itemDetail";
 
-export interface State {
+export interface IState {
     items: Item[];
     itemNames: string[];
     itemDetails: ItemDetail[];
     isSettingsWindowVisible: boolean;
-    isSearchWindowVisible: boolean;
+    isStatsWindowVisible: boolean;
     tesseractProgess: number;
     isApiWorking: boolean;
 }

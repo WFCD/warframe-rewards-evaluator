@@ -1,7 +1,7 @@
 # Warframe Relic Rewards Evaluator
 
 <h1 align="center">
-	<img width="100" src="https://raw.githubusercontent.com/tarekis/warframe-rewards-evaluator/master/logo.png" alt="Warframe Relic Rewards Evaluator">
+	<img width="100" src="https://raw.githubusercontent.com/tarekis/warframe-rewards-evaluator/master/src/img/logo.png" alt="Warframe Relic Rewards Evaluator">
 	<br>
 </h1>
 
