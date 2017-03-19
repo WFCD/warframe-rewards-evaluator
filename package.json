@@ -38,6 +38,7 @@
     "@types/react-dom": "^0.14.21",
     "@types/whatwg-fetch": "0.0.33",
     "del": "^2.2.2",
+    "electron-rebuild": "^1.5.7",
     "ncp": "^2.0.0",
     "typescript": "^2.2.1"
   },

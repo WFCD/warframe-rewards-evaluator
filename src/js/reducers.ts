@@ -26,7 +26,7 @@ export function reducer(state: State, action: any): State {
         return getInitialState();
     }
 
-    console.log("REDUCER: Received '" + action.type + "'.", action);
+    // console.log("REDUCER: Received '" + action.type + "'.", action);
 
     switch (action.type) {
 

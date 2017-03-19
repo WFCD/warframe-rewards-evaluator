@@ -120,11 +120,17 @@ export class PriceEvaluator {
     }
 
     static getDucatsPrice(item: Item) {
-        return item.v2Info.ducats;
+        if(item && item.v2Info && item.v2Info.ducats) {
+            return item.v2Info.ducats;
+        }
+        return null;
     }
 
     static getTradingTax(item: Item) {
-        return item.v2Info.trading_tax;
+        if(item && item.v2Info && item.v2Info.trading_tax) {
+            return item.v2Info.trading_tax;
+        }
+        return null;
     }
 
     /** All values default to null if no meaningful result could be found */

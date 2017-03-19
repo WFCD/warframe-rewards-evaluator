@@ -5,6 +5,7 @@ import * as stringSimilarity from "string-similarity";
 import * as screenshot from "desktop-screenshot";
 import * as Tesseract from 'tesseract.js'
 import * as uuid from 'node-uuid';
+import * as sharp from 'sharp';
 import { Store } from "redux";
 
 // Internal Modules
@@ -28,12 +29,12 @@ export class ScreenEvaluator {
     private static getItemBySimilarName(name: string, state: State): Item {
         // Find best match to scraped name
         const bestMatch = stringSimilarity.findBestMatch(name, state.itemNames).bestMatch.target;
-        return state.items.find(item => item.item_name === bestMatch);
+        return state.items.find(item => (item || {item_name : null}).item_name === bestMatch);
     }
 
     private static async getOrdersForItems(items: Item[]) {
         let correspondingItemTradeDetails: ItemTradeDetails[] = [];
-        
+
         // Use a old-school loop to get around asynch await error in forEach functor        
         for (var index = 0; index < items.length; index++) {
             var item = items[index];
@@ -43,12 +44,13 @@ export class ScreenEvaluator {
         return correspondingItemTradeDetails;
     }
     
-    private static async processItemNames(itemNames: string[], store: Store<State>, screenShotName: string) {
+    private static async processItemNames(inExactItemNames: string[], store: Store<State>, screenShotFilePaths: string[]) {
         const state = store.getState();
         // TODO scrape this from screen
-        const correspondingItems = itemNames.map(similarItemName => {
+        const correspondingItems = inExactItemNames.map(similarItemName => {
             return this.getItemBySimilarName(similarItemName, state);
         });
+
         store.dispatch(apiStarted());
         const correspondingItemTradeDetails = await this.getOrdersForItems(correspondingItems);
         store.dispatch(apiFinished());
@@ -62,8 +64,10 @@ export class ScreenEvaluator {
         });
         store.dispatch(itemDetails(correspondingItemDetails));
         
-        fs.unlink(screenShotName, (err) => {
-            if (err) throw err;
+        screenShotFilePaths.forEach(filePath => {            
+            fs.unlink(filePath, (err) => {
+                if (err) throw err;
+            });
         });
     }
 
@@ -76,14 +80,29 @@ export class ScreenEvaluator {
         // Let's get to work, show em' something!
         store.dispatch(showStatsWindow());
         const __thisRef__ = this;
-        const temporaryScreenshotBaseName = path.join(capturePath, '__capture-' + uuid.v4() + '-' + uuid.v4() + '.png');
+        const temporaryScreenshotBaseFileName = '__capture-' + uuid.v4() + '-' + uuid.v4();
+        const temporaryScreenshotRawFileName = temporaryScreenshotBaseFileName + '_raw.png';
+        const temporaryScreenshotCroppedFileName = temporaryScreenshotBaseFileName + 'cropped.png';
+        const temporaryScreenshotNameRaw = path.join(capturePath, temporaryScreenshotRawFileName);
+        const temporaryScreenshotNameCropped = path.join(capturePath, temporaryScreenshotCroppedFileName);
 
-        screenshot(temporaryScreenshotBaseName, function(error, complete) {
+        screenshot(temporaryScreenshotNameRaw, function(error, complete) {
+            
+            const transformer = sharp()
+                .resize(200, 200)
+                .crop(sharp.strategy.entropy)
+                .on('error', function(err) {
+                    console.log(err);
+            });
+            const readableStream = fs.createReadStream(temporaryScreenshotNameRaw);
+            const writableStream = fs.createWriteStream(temporaryScreenshotNameCropped);
+            readableStream.pipe(transformer).pipe(writableStream);
+
             // HACK we should probably not ignore errors, but it appears there are errors passed, even if there are none..
             let progressInPercent = 0;
 
-            // TODO crop the image to a smaller size, to improve detection time in production??
-            Tesseract.recognize('test_new_cropped.jpg')
+            // TODO crop the image to a smaller size, to make this work
+            Tesseract.recognize('test_new.jpg')
             .progress((progress) => {
                 // TODO leak progress to react stuff
                 if(progress.status === 'recognizing text'){
@@ -98,8 +117,12 @@ export class ScreenEvaluator {
             .catch(err => console.error(err))
             .then(function(result) {
                 var fs = require('fs');
-                // HACK eeeeh, this just works like that, trust me! 😐
-                const foundLines = result.blocks[0].paragraphs[0].lines;
+                let foundLines: Tesseract.Line[] = [] as Tesseract.Line[] ;
+                result.blocks.forEach(block => {
+                    block.paragraphs.forEach(paragraph => {
+                        foundLines = foundLines.concat(paragraph.lines);
+                    })
+                });
                 const validityRegex = /[A-Z]{3,}/; // A line needs to contain at least capital letters to be considered valid
                 let validLines: Tesseract.Line[] = [] as Tesseract.Line[];
                 foundLines.forEach(line => {
@@ -114,7 +137,7 @@ export class ScreenEvaluator {
                         x1: 0
                     }
                 };
-                const builtNames = [];
+                let builtNames = [];
                 let currentNameIndex = 0;
                 validLines.forEach((line, index) => {
                     line.words.forEach((word, index) => {
@@ -130,7 +153,10 @@ export class ScreenEvaluator {
                         builtNames[currentNameIndex] += ' ' + word.text;
                     });
                 });
-                __thisRef__.processItemNames(builtNames, store, temporaryScreenshotBaseName);
+                // HACK There was a case where the first item is undefined, because it's baseline was strange or so
+                // This prevents it for now, but i gotta see why that happened
+                builtNames = builtNames.filter(builtName => builtName !== undefined);
+                __thisRef__.processItemNames(builtNames, store, [temporaryScreenshotNameRaw, temporaryScreenshotNameCropped]);
             })
         });
     }

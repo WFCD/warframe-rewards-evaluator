@@ -55,6 +55,7 @@ class Main
         this.createStore();
         const ret = globalShortcut.register('Control+Alt+Enter', () => {
             console.log('Control+Alt+Enter was pressed');
+            console.log('Triggering scraping...');
             ScreenEvaluator.processCurrentScreen(this.store, temporaryScreenshotBasePath);
         });
         // Fetch initial item data
