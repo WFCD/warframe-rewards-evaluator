@@ -44,7 +44,7 @@ class Main
         const temporaryScreenshotBasePath = path.join(app.getPath('userData'), '__captures');
         // Ensure screen capture path, ignore alredy exits errors
         fs.mkdir(temporaryScreenshotBasePath, (err) => {
-            if(err.code !== 'EEXIST') {
+            if(err && err.code !== 'EEXIST') {
                 throw err;
             }
         });
