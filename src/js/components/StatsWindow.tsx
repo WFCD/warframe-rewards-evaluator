@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-class ResultWindow extends React.Component<Props, State>
+class StatsWindow extends React.Component<Props, State>
 {
     public constructor(props) {
         super(props);

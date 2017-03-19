@@ -26,10 +26,17 @@ import {State} from '../models/state';
  
 export class ScreenEvaluator {
     
-    private static getItemBySimilarName(name: string, state: State): Item {
+    private static getItemBySimilarNames(names: string[], state: State): Item[] {
         // Find best match to scraped name
-        const bestMatch = stringSimilarity.findBestMatch(name, state.itemNames).bestMatch.target;
-        return state.items.find(item => (item || {item_name : null}).item_name === bestMatch);
+        const confidentlyFoundItems = [];
+        names.forEach(name => {
+            const bestMatch = stringSimilarity.findBestMatch(name, state.itemNames).bestMatch;
+            // Allow a 30% fault tolerance, others are presumeably read wrong from screen..
+            if (bestMatch.rating > 0.7) {                ;
+                confidentlyFoundItems.push(state.items.find(item => (item || {item_name : null}).item_name === bestMatch.target));
+            }
+        });
+        return confidentlyFoundItems;
     }
 
     private static async getOrdersForItems(items: Item[]) {
@@ -47,16 +54,15 @@ export class ScreenEvaluator {
     private static async processItemNames(inExactItemNames: string[], store: Store<State>, screenShotFilePaths: string[]) {
         const state = store.getState();
         // TODO scrape this from screen
-        const correspondingItems = inExactItemNames.map(similarItemName => {
-            return this.getItemBySimilarName(similarItemName, state);
-        });
+        const foundItems = this.getItemBySimilarNames(inExactItemNames, state);
+        console.log(foundItems);
 
         store.dispatch(apiStarted());
-        const correspondingItemTradeDetails = await this.getOrdersForItems(correspondingItems);
+        const correspondingItemTradeDetails = await this.getOrdersForItems(foundItems);
         store.dispatch(apiFinished());
         
         const correspondingItemDetails = correspondingItemTradeDetails.map((itemTradeDetail, index) => {
-            const item = correspondingItems[index];
+            const item = foundItems[index];
             return {
                 name: item.item_name,
                 stats: PriceEvaluator.getAllStatistics(item, itemTradeDetail)
@@ -147,7 +153,6 @@ export class ScreenEvaluator {
                     foundLines.forEach(line => {
                         if(line.text.match(validityRegex)) {
                             validLines.push(line);
-                            console.log(line.text);
                         }
                     });
                     // First word has no previous word, use this instead

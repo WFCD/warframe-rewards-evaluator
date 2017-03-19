@@ -5,11 +5,11 @@ import { Provider } from 'react-redux';
 import { remote } from 'electron';
 
 // Internal Modules
-import ResultWindow from '../components/ResultWindow';
+import StatsWindow from '../components/StatsWindow';
 
 ReactDOM.render(
     <Provider store={remote.getGlobal('store')}>
-        <ResultWindow />
+        <StatsWindow />
     </Provider>,
     document.getElementById("app")
 );
