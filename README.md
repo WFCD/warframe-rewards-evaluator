@@ -7,7 +7,7 @@
 
 > Focus on your plat!
 
-Ever had the issue that you don't know which relic reward to pick? **Never again!**
+Ever had the issue that you don't know which relic reward to pick? How much is it worth? Are people buying it? **Never again!**
 
 This software gives you a possibility to automatically view your reward's current statistics and helps you decide what to pick.
 
