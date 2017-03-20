@@ -3,10 +3,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 // Actions
-import {settings} from "../actions/settings";
+import {settings} from '../actions/settings';
 
-class SettingsWindow extends React.Component<Props, State>
-{
+class SettingsWindow extends React.Component<Props, State> {
     public constructor(props) {
         super(props);
 
@@ -19,18 +18,18 @@ class SettingsWindow extends React.Component<Props, State>
 
     public render() {
         return (
-            <div id="container">
+            <div id='container'>
                 <div>
-                    <input type="text" value={this.state.url ? this.state.url : ""}
-                           onChange={e => this.setState({ url: e.target.value })} placeholder="URL" />
+                    <input type='text' value={this.state.url ? this.state.url : ''}
+                           onChange={e => this.setState({ url: e.target.value })} placeholder='URL' />
                 </div>
                 <div>
-                    <input type="email" value={this.state.email ? this.state.email : ""}
-                           onChange={e => this.setState({ email: e.target.value })} placeholder="E-Mail" />
+                    <input type='email' value={this.state.email ? this.state.email : ''}
+                           onChange={e => this.setState({ email: e.target.value })} placeholder='E-Mail' />
                 </div>
                 <div>
-                    <input type="password" value={this.state.password ? this.state.password : ""}
-                           onChange={e => this.setState({ password: e.target.value })} placeholder="Password" />
+                    <input type='password' value={this.state.password ? this.state.password : ''}
+                           onChange={e => this.setState({ password: e.target.value })} placeholder='Password' />
                 </div>
                 <div>
                     <button onClick={() => this.save()}>Save</button>

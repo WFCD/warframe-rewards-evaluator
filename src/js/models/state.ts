@@ -1,6 +1,6 @@
 // Models
-import { Item } from "./item";
-import { ItemDetail } from "./itemDetail";
+import { Item } from './item';
+import { ItemDetail } from './itemDetail';
 
 export interface IState {
     items: Item[];
@@ -10,4 +10,5 @@ export interface IState {
     isStatsWindowVisible: boolean;
     tesseractProgess: number;
     isApiWorking: boolean;
+    isGettingData: boolean;
 }

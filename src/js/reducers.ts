@@ -1,16 +1,18 @@
 // Actions
-import { SHOW_SETTINGS_WINDOW } from "./actions/showSettingsWindow";
-import { HIDE_SETTINGS_WINDOW } from "./actions/hideSettingsWindow";
-import { SHOW_STATS_WINDOW } from "./actions/showStatsWindow";
-import { HIDE_STATS_WINDOW } from "./actions/hideStatsWindow";
-import { ITEMS } from "./actions/items";
-import { ITEMS_DETAILS } from "./actions/itemDetails";
-import { TESSERACT_PROGRESS } from "./actions/tesseractProgess";
-import { API_STARTED } from "./actions/apiStarted";
-import { API_FINISHED } from "./actions/apiFinished";
+import { SHOW_SETTINGS_WINDOW } from './actions/showSettingsWindow';
+import { HIDE_SETTINGS_WINDOW } from './actions/hideSettingsWindow';
+import { SHOW_STATS_WINDOW } from './actions/showStatsWindow';
+import { HIDE_STATS_WINDOW } from './actions/hideStatsWindow';
+import { ITEMS } from './actions/items';
+import { ITEMS_DETAILS } from './actions/itemDetails';
+import { TESSERACT_PROGRESS } from './actions/tesseractProgess';
+import { GET_ITEM_STATS_STARTED } from './actions/getItemStatsStarted';
+import { GET_ITEM_STATS_FINISHED } from './actions/getItemStatsFinished';
+import { GET_DATA_STARTED } from './actions/getDataStarted';
+import { GET_DATA_FINISHED } from './actions/getDataFinished';
 
 // Models
-import { IState } from "./models/state";
+import { IState } from './models/state';
 
 function getInitialState(): IState {
     return {
@@ -20,7 +22,8 @@ function getInitialState(): IState {
         isSettingsWindowVisible: false,
         isStatsWindowVisible: false,
         tesseractProgess: 0,
-        isApiWorking: false
+        isApiWorking: false,
+        isGettingData: true
     };
 }
 
@@ -54,10 +57,7 @@ export function reducer(state: IState, action: any): IState {
         case HIDE_STATS_WINDOW:
             return {
                 ...state,
-                isStatsWindowVisible: false,
-                // Reset values on stat window close
-                itemDetails: [],
-                tesseractProgess: 0
+                isStatsWindowVisible: false
             };
 
         case ITEMS:
@@ -72,25 +72,38 @@ export function reducer(state: IState, action: any): IState {
                 ...state,
                 itemDetails: action.itemDetails
             };
-            
+
         case TESSERACT_PROGRESS:
             return {
                 ...state,
                 tesseractProgess: action.progress
             };
-            
-        case API_STARTED:
+
+        case GET_ITEM_STATS_STARTED:
             return {
                 ...state,
                 isApiWorking: true
             };
 
-        case API_FINISHED:
+        case GET_ITEM_STATS_FINISHED:
             return {
                 ...state,
                 isApiWorking: false
             };
 
+        case GET_DATA_STARTED:
+            return {
+                ...state,
+                isGettingData: true
+            };
+
+        case GET_DATA_FINISHED:
+            return {
+                ...state,
+                isGettingData: false,
+                tesseractProgess: 0,
+                isApiWorking: false,
+            };
 
         default:
             return state;

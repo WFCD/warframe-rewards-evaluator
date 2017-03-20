@@ -7,13 +7,13 @@ import {BestSaleValue} from '../models/bestSaleValue';
 
 export class PriceEvaluator {
     private static getOnlinePositions(tradePositions: TradePosition[]): TradePosition[] {
-        return tradePositions.filter(tradePosition => tradePosition.online_status === true || tradePosition.online_ingame === true)
+        return tradePositions.filter(tradePosition => tradePosition.online_status === true || tradePosition.online_ingame === true);
     }
 
     private static getMedian(values: number[]) {
-        values.sort( function(a,b) {return a - b;} );
-        
-        const half = Math.floor(values.length/2);
+        values.sort( function(a, b) {return a - b; } );
+
+        const half = Math.floor(values.length / 2);
 
         let result;
 
@@ -21,7 +21,7 @@ export class PriceEvaluator {
             result = values[half];
         }
         else {
-            result = (values[half-1] + values[half]) / 2.0;
+            result = (values[half - 1] + values[half]) / 2.0;
         }
         return isNaN(result) ? null : result;
     }
@@ -38,7 +38,7 @@ export class PriceEvaluator {
     private static getMinimal(values: number[]) {
         let minimal = Infinity;
         values.forEach(value => {
-            if(value < minimal) {
+            if (value < minimal) {
                 minimal = value;
             }
         });
@@ -48,7 +48,7 @@ export class PriceEvaluator {
     private static getMaximal(values: number[]) {
         let minimal = 0;
         values.forEach(value => {
-            if(value > minimal) {
+            if (value > minimal) {
                 minimal = value;
             }
         });
@@ -64,7 +64,7 @@ export class PriceEvaluator {
         return {
             reason: sellingPriceIsHigherThanBuyingPrice ? 'sell' : 'buy',
             value: sellingPriceIsHigherThanBuyingPrice ? minimalOnlineSalePrice : maximalOnlineBuyPrice
-        }
+        };
     }
 
     static getMinimalSalePrice(itemTradeDetails: ItemTradeDetails): number {
@@ -132,14 +132,14 @@ export class PriceEvaluator {
     }
 
     static getDucatsPrice(item: Item) {
-        if(item && item.v2Info && item.v2Info.ducats) {
+        if (item && item.v2Info && item.v2Info.ducats) {
             return item.v2Info.ducats;
         }
         return null;
     }
 
     static getTradingTax(item: Item) {
-        if(item && item.v2Info && item.v2Info.trading_tax) {
+        if (item && item.v2Info && item.v2Info.trading_tax) {
             return item.v2Info.trading_tax;
         }
         return null;
@@ -167,6 +167,6 @@ export class PriceEvaluator {
             medianOnlineBuyPrice: this.getMedianOnlineBuyPrice(itemTradeDetails),
             ducatsPrice: this.getDucatsPrice(item),
             tradingTax: this.getTradingTax(item)
-        }
+        };
     }
 }

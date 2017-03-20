@@ -1,4 +1,4 @@
-export const TESSERACT_PROGRESS = "TESSERACT_PROGRESS";
+export const TESSERACT_PROGRESS = 'TESSERACT_PROGRESS';
 
 export function tesseractProgress(progress: number) {
     return {

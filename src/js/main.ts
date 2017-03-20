@@ -2,25 +2,28 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as url from 'url';
-import { app, BrowserWindow, Tray, Menu, globalShortcut } from "electron";
-import { createStore, Store} from "redux";
+import { app, BrowserWindow, Tray, Menu, globalShortcut } from 'electron';
+import { createStore, Store} from 'redux';
 
 // Internal Modules
-import {reducer} from "./reducers";
-import {SettingsStore} from "./SettingsStore";
-import {Api} from "./Api";
-import {ScreenEvaluator} from "./utils/ScreenEvaluator";
+import {reducer} from './reducers';
+import {SettingsStore} from './SettingsStore';
+import {Api} from './Api';
+import {ScreenEvaluator} from './utils/ScreenEvaluator';
 
 // Actions
-import {showSettingsWindow} from "./actions/showSettingsWindow";
-import {items} from "./actions/items";
+import {showSettingsWindow} from './actions/showSettingsWindow';
+import {items} from './actions/items';
+import {hideStatsWindow} from './actions/hideStatsWindow';
+import {hideSettingsWindow} from './actions/hideSettingsWindow';
 
 // Models
-import {IState} from "./models/state";
+import {IState} from './models/state';
 
+// Global Constants
+const logoPath = path.join(__dirname, '..', 'img', 'logo.png');
 
-class Main
-{
+class Main {
     private app: Electron.App;
     private statsWindow: Electron.BrowserWindow;
     private settingsWindow: Electron.BrowserWindow;
@@ -33,9 +36,8 @@ class Main
         this.settingsStore = new SettingsStore();
     }
 
-    public run()
-    {
-        this.app.on("ready", () => this.onReady());
+    public run() {
+        this.app.on('ready', () => this.onReady());
         this.app.on('window-all-closed', () => {
             // Doing nothing will keep the application running
         });
@@ -45,11 +47,11 @@ class Main
         const temporaryScreenshotBasePath = path.join(app.getPath('userData'), '__captures');
         // Ensure screen capture path, ignore alredy exits errors
         fs.mkdir(temporaryScreenshotBasePath, (err) => {
-            if(err && err.code !== 'EEXIST') {
+            if (err && err.code !== 'EEXIST') {
                 throw err;
             }
         });
-        
+
         // TODO include
         this.createStatsWindow();
         // this.createSettingsWindow();
@@ -88,12 +90,12 @@ class Main
 
     private createTrayIcon() {
         // TODO rewrite, and include
-        this.tray = new Tray(path.join(__dirname, '..','img','logo.png'));
-        this.tray.setToolTip("Warframe Relic Rewards Evaluator");
+        this.tray = new Tray(logoPath);
+        this.tray.setToolTip('Warframe Relic Rewards Evaluator');
 
-        var menu = Menu.buildFromTemplate([
+        let menu = Menu.buildFromTemplate([
             {
-                label: "Settings",
+                label: 'Settings',
                 click: () => {
                     // HACK upon closing and reopening, the window instance is broken and cannnot be reopened
                     // We either disable closing (is that possible?) or initialize new windows every time if the old one is broken
@@ -101,7 +103,7 @@ class Main
                 }
             },
             {
-                label: "Exit",
+                label: 'Exit',
                 click: () => {
                     // Destroy the tray
                     this.tray.destroy();
@@ -113,25 +115,26 @@ class Main
 
         this.tray.setContextMenu(menu);
     }
-    
+
 
     private createStatsWindow() {
         this.statsWindow = new BrowserWindow(
             {
+                show: false,
                 center: true,
                 frame: false,
                 movable: true,
                 resizable: true,
-                skipTaskbar: true,
                 width: 1400,
                 height: 800,
-                title: "Results"
+                title: 'Results',
+                icon: logoPath
             }
         );
 
-        this.statsWindow.on('beforeunload', (e) => {
-            this.statsWindow.hide();
-            e.returnValue = false;
+        this.statsWindow.on('close', (event) => {
+            event.preventDefault();
+            this.store.dispatch(hideStatsWindow());
         });
 
         // Open the DevTools.
@@ -149,20 +152,26 @@ class Main
         // TODO include
         this.settingsWindow = new BrowserWindow(
             {
+                show: false,
                 center: true,
                 frame: false,
                 movable: true,
                 resizable: true,
-                skipTaskbar: true,
-                transparent: true,
                 width: 800,
                 height: 400,
-                title: "Results"
+                title: 'Settings',
+                icon: logoPath
             }
         );
 
         // Open the DevTools.
         this.settingsWindow.webContents.openDevTools();
+
+
+        this.settingsWindow.on('close', (event) => {
+            event.preventDefault();
+            this.store.dispatch(hideSettingsWindow());
+        });
 
         // and load the index.html of the app.
         this.settingsWindow.loadURL(url.format({
@@ -179,7 +188,7 @@ class Main
     showSettingsWindow() {
         this.settingsWindow.show();
     }
-    
+
     hideStatsWindow() {
         this.statsWindow.hide();
     }
@@ -199,7 +208,7 @@ class Main
 
 let main = null;
 
-var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
+let shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
     // Only allow single instances, if another one is tried to open, focus the tray
     if (main) {
         main.focusTray();

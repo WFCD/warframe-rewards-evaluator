@@ -1,4 +1,4 @@
-export const SHOW_STATS_WINDOW = "SHOW_STATS_WINDOW";
+export const SHOW_STATS_WINDOW = 'SHOW_STATS_WINDOW';
 
 export function showStatsWindow() {
     return {

@@ -1,8 +1,7 @@
 // Internal Modules
-import { PromiseJSONStore } from "./utils/PromiseJSONStore";
+import { PromiseJSONStore } from './utils/PromiseJSONStore';
 
-export class SettingsStore
-{
+export class SettingsStore {
     public getEmail(): Promise<string> {
         return PromiseJSONStore.getValue<string>('email');
     }

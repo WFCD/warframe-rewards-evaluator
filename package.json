@@ -27,6 +27,7 @@
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
     "react-tap-event-plugin": "^2.0.1",
+    "react-typist": "^1.0.3",
     "redux": "^3.6.0",
     "sharp": "^0.17.2",
     "string-similarity": "^1.1.0",
@@ -46,8 +47,11 @@
     "typescript": "^2.2.1"
   },
   "scripts": {
-    "start": "node_modules/.bin/electron .",
+    "start": "cross-env NODE_ENV=production node_modules/.bin/electron .",
+    "test": "node_modules/.bin/electron .",
     "build": "node scripts/build && tsc --outDir dist/js",
-    "restart": "npm run build && npm run start"
+    "restart": "npm run build && npm run start",
+    "retest": "npm run build && npm run test",
+    "lint": "tslint tslint.json --project tsconfig.json"
   }
 }

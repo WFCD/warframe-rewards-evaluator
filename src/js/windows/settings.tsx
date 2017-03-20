@@ -11,5 +11,5 @@ ReactDOM.render(
     <Provider store={remote.getGlobal('store')}>
         <SettingsWindow />
     </Provider>,
-    document.getElementById("app")
+    document.getElementById('app')
 );

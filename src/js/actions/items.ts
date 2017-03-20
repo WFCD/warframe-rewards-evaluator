@@ -1,7 +1,7 @@
 // Models
 import {Item} from '../models/item';
 
-export const ITEMS = "ITEMS";
+export const ITEMS = 'ITEMS';
 
 export function items(items: Item[]) {
     return {

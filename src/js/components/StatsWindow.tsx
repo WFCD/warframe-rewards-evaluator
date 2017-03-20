@@ -6,20 +6,20 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
-import Paper from 'material-ui/Paper';
+import Paper from 'material-ui/Paper'; ;
+import Typist from 'react-typist';
 
 // Actions
-import {settings} from "../actions/settings";
+import {settings} from '../actions/settings';
 
 // Models
-import {ItemDetail} from "../models/itemDetail";
+import {ItemDetail} from '../models/itemDetail';
 
 function isInt(value: number) {
-    return !isNaN(value) && parseInt(Number(value) as any) == value && !isNaN(parseInt(value as any, 10));
+    return !isNaN(value) && parseInt(Number(value) as any) === value && !isNaN(parseInt(value as any, 10));
 }
 
-class StatsWindow extends React.Component<Props, State>
-{
+class StatsWindow extends React.Component<Props, State> {
     public constructor(props: Props) {
         super(props);
 
@@ -36,14 +36,14 @@ class StatsWindow extends React.Component<Props, State>
 
     public render() {
         return (
-            <div id="container">
+            <div id='container'>
                 {this.renderContent()}
             </div>
         );
     }
 
     private renderContent() {
-        if (this.state.itemDetails.length === 0 ) {
+        if (this.state.isGettingData) {
             return this.renderProgresses();
         }
         else {
@@ -66,7 +66,7 @@ class StatsWindow extends React.Component<Props, State>
             else if (itemPlat === bestPlatValue) {
                 overallBestPlatItems.push(itemDetail);
             }
-            
+
             if (itemDucats > bestDucatsValue) {
                 bestDucatsValue = itemDucats;
                 overallBestDucatsItems = [itemDetail];
@@ -74,7 +74,7 @@ class StatsWindow extends React.Component<Props, State>
             else if (itemDucats === bestDucatsValue) {
                 overallBestDucatsItems.push(itemDetail);
             }
-        })
+        });
         return <div className='itemDetailsPage'>
                 <div className='pageTitle itemDetailsTitle' style={{width: '100%'}}>
                     Found items
@@ -90,7 +90,7 @@ class StatsWindow extends React.Component<Props, State>
                                 <Divider style={{width: '100%'}} />
                                 <div className='currencyImagesWrapper'>
                                     <div className='currencyImageWrapper'>
-                                        <Paper className={'currencyPaper' + (isBestValuePlatItem ? ' bestValueActive' :'')} zDepth={1}>
+                                        <Paper className={'currencyPaper' + (isBestValuePlatItem ? ' bestValueActive' : '')} zDepth={1}>
                                             <div className='currencyImageFlexContainer'>
                                                 <div className='recommendedPrice'>{itemDetail.stats.recommendedSalePrice.value + ' '}</div>
                                                 <img className='currencyImage' src='../img/platinum.png' />
@@ -101,7 +101,7 @@ class StatsWindow extends React.Component<Props, State>
                                         </Paper>
                                     </div>
                                     <div className='currencyImageWrapper'>
-                                        <Paper className={'currencyPaper' + (isBestValueDucatsItem ? ' bestValueActive' :'')} zDepth={1}>
+                                        <Paper className={'currencyPaper' + (isBestValueDucatsItem ? ' bestValueActive' : '')} zDepth={1}>
                                             <div className='currencyImageFlexContainer'>
                                                 <div className='recommendedPrice'>{itemDetail.stats.ducatsPrice ? itemDetail.stats.ducatsPrice + ' ' : '- '}</div>
                                                 <img className='currencyImage' src='../img/ducats.png' />
@@ -148,10 +148,10 @@ class StatsWindow extends React.Component<Props, State>
                                 {this.renderPriceRange(itemDetail.stats.salePriceRange, 'Selling price range')}
                                 {this.renderPriceRange(itemDetail.stats.buyPriceRange, 'Buying price range')}
                             </div>
-                        </Card>
+                        </Card>;
                     })}
                 </div>
-            </div>
+            </div>;
     }
 
     private renderCommonStatsDetail(value: number, description: string) {
@@ -163,7 +163,7 @@ class StatsWindow extends React.Component<Props, State>
             </div>
         );
     }
-    
+
     private renderPriceRange(value: number[], description: string) {
         // TODO Use some chart lib here,
         /*<div>
@@ -191,13 +191,46 @@ class StatsWindow extends React.Component<Props, State>
                 </div>
                 <div>
                     {isProcessingTesseract ? (
-                        <LinearProgress mode='determinate' value={this.state.tesseractProgess} />
+                        <LinearProgress key='determinate' mode='determinate' value={this.state.tesseractProgess} />
                     ) : (
-                        <LinearProgress mode="indeterminate" />
+                        <LinearProgress key='indeterminate' mode='indeterminate' />
                     )}
                 </div>
+                {this.state.isStatsWindowVisible &&
+                    <div className='orokinConsole'>
+                    <div>
+                        <Typist cursor={{
+                            element: ''
+                        }}>
+                            {this.generateGibberish()}
+                        </Typist>
+                    </div>
+                </div>}
             </div>
         );
+    }
+
+    private generateGibberish() {
+            let lines = [];
+            const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const maximumLineCharacter = 50;
+            const minimumLineCharacter = 25;
+
+            for ( let i = 0; i < 15; i++ ) {
+                const lineLength = Math.random() * (maximumLineCharacter - minimumLineCharacter) + minimumLineCharacter;
+                let text = '';
+                for ( let i = 0; i < lineLength; i++ ) {
+                    text += possibleCharacters.charAt(Math.floor(Math.random() * possibleCharacters.length));
+                }
+                lines.push(text);
+            }
+            return (
+                <div>
+                    {lines.map((line, index) => {
+                        return <div key={index} >{line}</div>;
+                    })}
+                </div>
+            );
     }
 }
 
@@ -205,13 +238,16 @@ interface Props {
     itemDetails: ItemDetail[];
     tesseractProgess: number;
     isApiWorking: boolean;
-    onSave: (url: string, email: string, password: string) => void;
+    isGettingData: boolean;
+    isStatsWindowVisible: boolean;
 }
 
 interface State {
     itemDetails: ItemDetail[];
     tesseractProgess: number;
     isApiWorking: boolean;
+    isGettingData: boolean;
+    isStatsWindowVisible: boolean;
 }
 
 export default connect(
@@ -219,14 +255,9 @@ export default connect(
         return {
             itemDetails: state.itemDetails,
             tesseractProgess: state.tesseractProgess,
-            isApiWorking: state.isApiWorking
-        };
-    },
-    dispatch => {
-        return {
-            onSave: (url: string, email: string, password: string) => {
-                dispatch(settings(url, email, password));
-            }
+            isApiWorking: state.isApiWorking,
+            isGettingData: state.isGettingData,
+            isStatsWindowVisible: state.isStatsWindowVisible
         };
     }
 )(StatsWindow);

@@ -17,5 +17,5 @@ ReactDOM.render(
             <StatsWindow />
         </MuiThemeProvider>
     </Provider>,
-    document.getElementById("app")
+    document.getElementById('app')
 );

@@ -6,8 +6,7 @@ import * as fs from 'fs';
 import {Item} from './models/item';
 import {ItemTradeDetails} from './models/itemTradeDetails';
 
-export class Api
-{
+export class Api {
     private url: string;
     private email: string;
     private password: string;
@@ -32,7 +31,7 @@ export class Api
             return {
                 ...result,
                 v2Info: v2Result.items.find(v2Result => v2Result.en.item_name === result.item_name)
-            }
+            };
         });
 
         return cominedResults;
