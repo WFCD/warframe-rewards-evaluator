@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@types/tesseract.js": "0.0.2",
+    "cross-env": "^5.0.0",
     "desktop-screenshot": "^0.1.1",
     "electron": "^1.4.13",
     "electron-json-storage": "^3.0.1",
