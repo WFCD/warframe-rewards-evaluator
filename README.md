@@ -5,6 +5,10 @@
 	<br>
 </h1>
 
+[![Supported by Warframe Community Developers](https://raw.githubusercontent.com/Warframe-Community-Developers/banner/master/banner.png)](https://github.com/Warframe-Community-Developers "Supported by Warframe Community Developers")
+
+This version is **not** yet stable!
+
 > Focus on your plat!
 
 Ever had the issue that you don't know which relic reward to pick? How much is it worth? Are people buying it? **Never again!**
