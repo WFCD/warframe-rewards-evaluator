@@ -1081,7 +1081,7 @@ is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
 
-is-url@^1.2.2:
+is-url@1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/is-url/-/is-url-1.2.2.tgz#498905a593bf47cc2d9e7f738372bbf7696c7f26"
 
@@ -1109,7 +1109,7 @@ isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
-isomorphic-fetch@^2.1.1:
+isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   dependencies:
@@ -2280,12 +2280,13 @@ tesseract.js-core@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/tesseract.js-core/-/tesseract.js-core-1.0.2.tgz#1ce33a29dc812357b8356a30ededf8b188043b37"
 
-tesseract.js@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/tesseract.js/-/tesseract.js-1.0.10.tgz#e11a96ae76147939d9218f88e287fb69414b1e5d"
+tesseract.js@^1.0.19:
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/tesseract.js/-/tesseract.js-1.0.19.tgz#f66a9accef1aa933ec7e574d1bb3205f7d2aef65"
   dependencies:
     file-type "^3.8.0"
-    is-url "^1.2.2"
+    is-url "1.2.2"
+    isomorphic-fetch "^2.2.1"
     jpeg-js "^0.2.0"
     level-js "^2.2.4"
     node-fetch "^1.6.3"

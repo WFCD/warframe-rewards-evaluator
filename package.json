@@ -32,7 +32,7 @@
     "redux": "^3.6.0",
     "sharp": "^0.17.2",
     "string-similarity": "^1.1.0",
-    "tesseract.js": "^1.0.10",
+    "tesseract.js": "^1.0.19",
     "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {
