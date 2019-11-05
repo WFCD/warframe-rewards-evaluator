@@ -19,7 +19,7 @@
     "@types/tesseract.js": "0.0.2",
     "cross-env": "^5.0.0",
     "desktop-screenshot": "^0.1.1",
-    "electron": "^1.8.8",
+    "electron": "^7.1.0",
     "electron-json-storage": "^3.0.1",
     "material-ui": "^0.17.1",
     "node-fetch": "^1.6.3",
